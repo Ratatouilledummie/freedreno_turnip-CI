@@ -72,7 +72,7 @@ endian = 'little'
 EOF
 
 
-echo "Downloading libdrm for ARM64 releases from ARCH Linux..." $'\n
+echo "Downloading libdrm for ARM64 releases from ARCH Linux..." $'\n'
 curl http://mirror.archlinuxarm.org/aarch64/extra/libdrm-2.4.114-1-aarch64.pkg.tar.xz --output libdrm-aarch64.pkg.tar.xz &> /dev/null
 ##
 echo "Extracting libdrm for aarch64 and move necessaries files to required folders"
