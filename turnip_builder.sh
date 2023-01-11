@@ -85,7 +85,7 @@ cat <<EOF >"libdrm.pc"
 prefix=$workdir/android-ndk-r25b/deps
 includedir=${prefix}/include
 libdir=${prefix}/lib
-
+#########
 Name: libdrm
 Description: Userspace interface to kernel DRM services
 Version: 2.4.114
