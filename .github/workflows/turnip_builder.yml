@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   schedule:
   - cron: "20 5 1,15 * *"
+  
+permissions:
+  contents: write
 
 jobs:
   start_building_turnip:
