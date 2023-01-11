@@ -28,8 +28,8 @@ jobs:
       with:
         name: Upload meson and ninja logs for debugging
         path: |
-          ~/turnip_workdir/ninja_log
-          ~/mesa-main/build-android-aarch64/meson-logs/meson-log.txt
+          $workdir/turnip_workdir/ninja_log
+          $workdir/mesa-main/build-android-aarch64/meson-logs/meson-log.txt
          
     - name: Release "turnip"
       uses: softprops/action-gh-release@v1
@@ -38,4 +38,4 @@ jobs:
         tag_name: workflow_${{github.run_number}}
         name: Release ${{github.run_number}}
         files: |
-           ~/turnip.zip
+           $workdir/turnip.zip
