@@ -53,7 +53,6 @@ unzip mesa-main.zip &> /dev/null
 cd mesa-main
 
 
-
 echo "Creating meson cross file ..." $'\n'
 ndk="$workdir/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin"
 cat <<EOF >"android-aarch64"
@@ -64,7 +63,7 @@ cpp = ['ccache', '$ndk/aarch64-linux-android31-clang++', '-fno-exceptions', '-fn
 c_ld = 'lld'
 cpp_ld = 'lld'
 strip = '$ndk/aarch64-linux-android-strip'
-pkgconfig = ['env', 'PKG_CONFIG_LIBDIR=NDKDIR/pkgconfig', '/usr/bin/pkg-config']
+pkgconfig = ['env', 'PKG_CONFIG_LIBDIR=$workdir/android-ndk-r25b/pkgconfig', '/usr/bin/pkg-config']
 [host_machine]
 system = 'android'
 cpu_family = 'aarch64'
@@ -73,6 +72,29 @@ endian = 'little'
 EOF
 
 
+echo "Downloading libdrm for ARM64 releases from ARCH Linux..." $'\n
+curl http://mirror.archlinuxarm.org/aarch64/extra/libdrm-2.4.114-1-aarch64.pkg.tar.xz --output libdrm-aarch64.pkg.tar.xz &> /dev/null
+##
+echo "Extracting libdrm for aarch64 and move necessaries files to required folders"
+tar -xf libdrm-aarch64.pkg.tar.xz
+##
+mkdir $workdir/android-ndk-r25b/pkgconfig && mkdir $workdir/android-ndk-r25b/deps && cp -r usr/include $workdir/android-ndk-r25b/deps && cp -r usr/lib $workdir/android-ndk-r25b/deps
+##
+echo "Creating libdrm pkgconfig file..." $'\n'
+cat <<EOF >"libdrm.pc"
+prefix=$workdir/android-ndk-r25b/deps
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: libdrm
+Description: Userspace interface to kernel DRM services
+Version: 2.4.114
+Libs: -L${libdir} -ldrm
+Libs.private: -lm
+Cflags: -I${includedir} -I${includedir}/libdrm
+EOF
+
+##
 
 echo "Generating build files ..." $'\n'
 meson build-android-aarch64 --cross-file $workdir/mesa-main/android-aarch64 -Dbuildtype=release -Dplatforms=android -Dplatform-sdk-version=31 -Dandroid-stub=true -Dgallium-drivers= -Dvulkan-drivers=freedreno -Dfreedreno-kgsl=true -Db_lto=true -Db_lto_mode=thin &> $workdir/meson_log
